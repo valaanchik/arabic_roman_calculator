@@ -67,13 +67,16 @@ func main() {
 	var str string
 	fmt.Scan(&str)
 	str = strings.ReplaceAll(str, " ", "")
+
 	re := regexp.MustCompile(`^(\d+|[IVX]+)([\+\-\*/])(\d+|[IVX]+)$`)
 	part := re.FindStringSubmatch(str)
-	if len(part) < 3 {
-		panic("Выдача паники, так как строка не является математической операцией..")
-	}
+
 	if len(part) != 4 {
-		panic("Выдача паники, так как формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *).")
+		if !strings.ContainsAny(str, "+-*/") {
+			panic("Выдача паники, так как строка не является математической операцией.")
+		} else {
+			panic("Выдача паники, так как формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *).")
+		}
 	}
 
 	if romToAr[part[1]] != 0 && romToAr[part[3]] != 0 {
@@ -91,6 +94,9 @@ func main() {
 	if romToAr[part[1]] == 0 || romToAr[part[3]] == 0 {
 		intA, _ := strconv.Atoi(part[1])
 		intB, _ := strconv.Atoi(part[3])
+		if intA <= 0 || intB <= 0 || intA >= 10 || intB >= 10 {
+			panic("Выдача паники, так как входные данные не соответствуют требованиям")
+		}
 		fmt.Println(operator(part[2], intA, intB))
 	}
 }
